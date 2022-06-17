@@ -3,12 +3,28 @@ import asyncio
 import time
 from telethon import events
 
-api_id = 'put your api_id here'
-api_hash = 'put yout api_hash here'
+# get from my.telegram.org/apps
+api_id = 'api_id'
+api_hash = 'api_hash'
 
-client = TelegramClient('Username', api_id, api_hash)
+client = TelegramClient('username', api_id, api_hash)
 
-message = 'Hey, I will be at a retreat until Saturday. I promise to get in touch as soon as I can. See you.'
+def res1():
+    return "Response 1\n\n--AutoReply--"
+def res2():
+    return "Response 2\n\n--AutoReply--"
+def res3():
+    return "Response 3\n\n--AutoReply--"
+
+switcher = {
+    1: res1,
+    2: res2,
+    3: res3
+}
+
+def switch(msg):
+    return switcher.get(msg)()
+    
 
 def main():
 
@@ -16,9 +32,18 @@ def main():
     
     @client.on(events.NewMessage(incoming=True))
     async def _(event):
-        if event.is_private:
-            time.sleep(1)  # pause for 1 second to rate-limit automatic replies
-            await client.send_message(event.message.from_id, message)
+        if 'pattern1' in event.message.message:
+            time.sleep(1)
+            await event.respond(switch(1))
+        elif 'pattern2' in event.message.message:
+            time.sleep(1)
+            await event.respond(switch(2))
+        elif 'pattern3' in event.message.message:
+            time.sleep(1)
+            await event.respond(switch(2))
+        elif 'pattern4' in event.message.message:
+            time.sleep(1)
+            await event.respond(switch(3))
     client.run_until_disconnected()
 
 
